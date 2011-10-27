@@ -1,0 +1,30 @@
+commit cc30e3c19f92c93481e751ad1e669e342cacff22
+Author: Christoph Junghans <junghans@votca.org>
+Date:   Mon Sep 19 16:16:38 2011 +0200
+
+    fixed install issue related to name transformation
+
+diff --git a/Makefile.am b/Makefile.am
+index 988481b..1e64a09 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -40,14 +40,16 @@ Espresso_install_CPPFLAGS = -D 'ESPRESSO_SCRIPTS_DEFAULT="$(scriptsdir)"'
+ Espresso_install_SOURCES = src/scriptsdir.c src/main.c
+ Espresso_install_LDADD = src/libEspresso.a
+ 
++ESPRESSO = `echo Espresso | sed '$(transform)'`$(EXEEXT)
++ESPRESSO_INSTALL = `echo Espresso.install | sed '$(transform)'`$(EXEEXT)
+ # rename Espresso after installation
+ install-exec-hook:
+ 	$(am__mv) \
+-		$(DESTDIR)$(bindir)/Espresso.install \
+-		$(DESTDIR)$(bindir)/Espresso
++		$(DESTDIR)$(bindir)/$(ESPRESSO_INSTALL) \
++		$(DESTDIR)$(bindir)/$(ESPRESSO)
+ 
+ uninstall-local:
+-	-rm -f $(DESTDIR)$(bindir)/Espresso
++	-rm -f $(DESTDIR)$(bindir)/$(ESPRESSO)
+ 
+ 
+ #################################################################
