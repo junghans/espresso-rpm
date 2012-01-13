@@ -21,7 +21,7 @@
 
 Name:           espresso
 Version:        3.0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Group:          System Environment/Libraries
 
@@ -216,6 +216,9 @@ popd
 
 
 %changelog
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Wed Oct 26 2011 Thomas Spura <tomspur@fedoraproject.org> - 3.0.2-2
 - add missing BR autoconf/automake
 - use _isa where possible
