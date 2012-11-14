@@ -217,9 +217,6 @@ popd
 - disable tk per upstream request
 - drop patch
 
-* Thu Mar  8 2012 Thomas Spura <tomspur@fedoraproject.org> - 3.1.0-1
-- update to new version
-
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.2-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
