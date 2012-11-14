@@ -20,22 +20,19 @@
 %global OPENMPI 0
 
 Name:           espresso
-Version:        3.0.2
-Release:        4%{?dist}
+Version:        3.1.1
+Release:        1%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Group:          System Environment/Libraries
 
 License:        GPLv3+
 URL:            http://espressomd.org
 Source0:        http://download.savannah.gnu.org/releases/espressomd/espresso-%{version}.tar.gz
-# install fix cherry-picked from upstream git
-Patch0:         espresso-install-fix.patch
 # BR autotools for patch0
-BuildRequires:  autoconf
-BuildRequires:  automake
+#BuildRequires:  autoconf
+#BuildRequires:  automake
 
 BuildRequires:  tcl-devel
-BuildRequires:  tk-devel
 BuildRequires:  fftw-devel
 
 Requires:       %{name}-common = %{version}-%{release}
@@ -101,10 +98,8 @@ This package contains %{name} compiled against MPICH2.
 
 %prep
 %setup -q
-%patch0 -p1
-autoreconf -fi
 
-sed -i 's/tclsh8\.4/tclsh/' tools/trace_memory.tcl
+#sed -i 's/tclsh8\.4/tclsh/' tools/trace_memory.tcl
 
 mkdir openmpi_build mpich2_build no_mpi
 
@@ -113,7 +108,7 @@ mkdir openmpi_build mpich2_build no_mpi
 pushd no_mpi
 export CC=gcc
 export CXX=g++
-%dconfigure --enable-shared --with-tk
+%dconfigure --enable-shared
 make %{?_smp_mflags}
 popd
 
@@ -124,7 +119,7 @@ export CXX=mpicxx
 # Build OpenMPI version
 %{_openmpi_load}
 pushd openmpi_build
-%dconfigure_mpi --enable-shared --with-tk --program-suffix=$MPI_SUFFIX
+%dconfigure_mpi --enable-shared --program-suffix=$MPI_SUFFIX
 make %{?_smp_mflags}
 popd
 %{_openmpi_unload}
@@ -132,7 +127,7 @@ popd
 # Build mpich2 version
 %{_mpich2_load}
 pushd mpich2_build
-%dconfigure_mpi --enable-shared --with-tk --program-suffix=$MPI_SUFFIX
+%dconfigure_mpi --enable-shared --program-suffix=$MPI_SUFFIX
 make %{?_smp_mflags}
 popd
 %{_mpich2_unload}
@@ -158,7 +153,7 @@ pushd no_mpi
 make install DESTDIR=%{buildroot}
 popd
 
-rm %{buildroot}%{_libdir}/libespressobf.a
+#rm %{buildroot}%{_libdir}/libespressobf.a
 
 chmod +x %{buildroot}/usr/share/espresso/tools/trace_memory.py
 chmod +x %{buildroot}/usr/share/espresso/tools/trace_memory.tcl
@@ -167,14 +162,14 @@ chmod +x %{buildroot}/usr/share/espresso/tools/set_features
 
 %check
 pushd no_mpi
-make check || cat testsuite/*.err || :
+make check || cat testsuite/runtest.log || :
 popd
 
 # test openmpi?
 %if 0%{?OPENMPI}
 %{_openmpi_load}
 pushd openmpi_build
-make check || cat testsuite/*.err || :
+make check || cat testsuite/runtest.log || :
 popd
 %{_openmpi_unload}
 %endif
@@ -189,7 +184,7 @@ popd
 #mpd --daemon
 
 pushd mpich2_build
-make check || cat testsuite/*.err || :
+make check || cat testsuite/runtest.log || :
 popd
 
 #mpdallexit
@@ -216,6 +211,15 @@ popd
 
 
 %changelog
+* Wed Nov 14 2012 Thomas Spura <tomspur@fedoraproject.org> - 3.1.1-1
+- rebuild for newer mpich2
+- update to new version
+- disable tk per upstream request
+- drop patch
+
+* Thu Mar  8 2012 Thomas Spura <tomspur@fedoraproject.org> - 3.1.0-1
+- update to new version
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.2-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
