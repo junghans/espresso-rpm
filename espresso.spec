@@ -37,9 +37,6 @@ BuildRequires:  fftw-devel
 
 Requires:       %{name}-common = %{version}-%{release}
 
-# for the testsuite: 'pwgen' is needed to create a random password
-BuildRequires:  pwgen
-
 %description
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
 in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
