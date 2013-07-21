@@ -14,14 +14,14 @@
 # So to easy enable/disable the testsuite, I introduce the following
 #   variables:
 #
-# * MPD:       if '1' enable mpich2, which requires mpd to start
+# * MPICH:     if '1' enable mpich
 # * OPENMPI:   if '1' enable openmpi
-%global MPD 0
+%global MPICH 0
 %global OPENMPI 0
 
 Name:           espresso
 Version:        3.1.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Group:          System Environment/Libraries
 
@@ -79,13 +79,15 @@ ESPResSo contains a number of advanced algorithms, e.g.
 This package contains %{name} compiled against Open MPI.
 
 
-%package mpich2
-BuildRequires:  mpich2-devel
-Requires:       mpich2%{?_isa}
+%package mpich
+BuildRequires:  mpich-devel
+Requires:       mpich%{?_isa}
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Group:          System Environment/Libraries 
-%description mpich2
+Provides:	%{name}-mpich2 = %{version}-%{release}
+Obsoletes:	%{name}-mpich2 < 3.1.1-3
+%description mpich
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
 in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
 ESPResSo contains a number of advanced algorithms, e.g.
@@ -101,7 +103,7 @@ This package contains %{name} compiled against MPICH2.
 
 #sed -i 's/tclsh8\.4/tclsh/' tools/trace_memory.tcl
 
-mkdir openmpi_build mpich2_build no_mpi
+mkdir openmpi_build mpich_build no_mpi
 
 
 %build
@@ -124,13 +126,13 @@ make %{?_smp_mflags}
 popd
 %{_openmpi_unload}
 
-# Build mpich2 version
-%{_mpich2_load}
-pushd mpich2_build
+# Build mpich version
+%{_mpich_load}
+pushd mpich_build
 %dconfigure_mpi --enable-shared --program-suffix=$MPI_SUFFIX
 make %{?_smp_mflags}
 popd
-%{_mpich2_unload}
+%{_mpich_unload}
 
 
 %install
@@ -142,11 +144,11 @@ make install DESTDIR=%{buildroot}
 popd
 %{_openmpi_unload}
 
-%{_mpich2_load}
-pushd mpich2_build
+%{_mpich_load}
+pushd mpich_build
 make install DESTDIR=%{buildroot}
 popd
-%{_mpich2_unload}
+%{_mpich_unload}
 
 
 pushd no_mpi
@@ -174,25 +176,13 @@ popd
 %{_openmpi_unload}
 %endif
 
-# test mpd?
-%if 0%{?MPD}
-%{_mpich2_load}
-# create mpd.conf
-#export MPD_CONF_FILE=mpd.conf
-#echo MPD_SECRETWORD=$(pwgen -s 50 1) > mpd.conf
-#chmod 600 mpd.conf
-#mpd --daemon
-
-pushd mpich2_build
+# test mpich?
+%if 0%{?MPICH}
+%{_mpich_load}
+pushd mpich_build
 make check || cat testsuite/runtest.log || :
 popd
-
-#mpdallexit
-
-# delete mpd.conf again
-#rm mpd.conf
-#unset MPD_CONF_FILE
-%{_mpich2_unload}
+%{_mpich_unload}
 %endif
 
 
@@ -206,11 +196,14 @@ popd
 %files openmpi
 %{_libdir}/openmpi/bin/Espresso_openmpi
 
-%files mpich2
-%{_libdir}/mpich2/bin/Espresso_mpich2
+%files mpich
+%{_libdir}/mpich/bin/Espresso_mpich
 
 
 %changelog
+* Sat Jul 20 2013 Deji Akingunola <dakingun@gmail.com> - 3.1.1-3
+- Rename mpich2 sub-packages to mpich and rebuild for mpich-3.0
+
 * Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
