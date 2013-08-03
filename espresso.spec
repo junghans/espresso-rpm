@@ -21,7 +21,7 @@
 
 Name:           espresso
 Version:        3.1.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Group:          System Environment/Libraries
 
@@ -198,6 +198,9 @@ popd
 
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.1-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Sat Jul 20 2013 Deji Akingunola <dakingun@gmail.com> - 3.1.1-3
 - Rename mpich2 sub-packages to mpich and rebuild for mpich-3.0
 
