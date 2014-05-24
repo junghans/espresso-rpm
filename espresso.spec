@@ -20,8 +20,8 @@
 %global OPENMPI 0
 
 Name:           espresso
-Version:        3.1.1
-Release:        6%{?dist}
+Version:        3.2.0
+Release:        1%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Group:          System Environment/Libraries
 
@@ -82,8 +82,8 @@ Requires:       mpich%{?_isa}
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Group:          System Environment/Libraries 
-Provides:	%{name}-mpich2 = %{version}-%{release}
-Obsoletes:	%{name}-mpich2 < 3.1.1-3
+Provides:       %{name}-mpich2 = %{version}-%{release}
+Obsoletes:      %{name}-mpich2 < 3.1.1-3
 %description mpich
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
 in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
@@ -198,6 +198,9 @@ popd
 
 
 %changelog
+* Sat May 24 2014 Thomas Spura <tomspur@fedoraproject.org> - 3.2.0-1
+- update to 3.2.0
+
 * Wed May 21 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 3.1.1-6
 - Rebuilt for https://fedoraproject.org/wiki/Changes/f21tcl86
 
