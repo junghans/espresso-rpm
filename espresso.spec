@@ -21,16 +21,16 @@
 
 Name:           espresso
 Version:        3.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Group:          System Environment/Libraries
 
 License:        GPLv3+
 URL:            http://espressomd.org
 Source0:        http://download.savannah.gnu.org/releases/espressomd/espresso-%{version}.tar.gz
-# BR autotools for patch0
-#BuildRequires:  autoconf
-#BuildRequires:  automake
+# run autoreconf for aarch64 support
+BuildRequires:  autoconf
+BuildRequires:  automake
 
 BuildRequires:  tcl-devel
 BuildRequires:  fftw-devel
@@ -104,6 +104,7 @@ mkdir openmpi_build mpich_build no_mpi
 
 
 %build
+autoreconf -fi
 pushd no_mpi
 export CC=gcc
 export CXX=g++
@@ -198,6 +199,9 @@ popd
 
 
 %changelog
+* Sun May 25 2014 Thomas Spura <tomspur@fedoraproject.org> - 3.2.0-2
+- run autoreconf in %%build to support aarch64
+
 * Sat May 24 2014 Thomas Spura <tomspur@fedoraproject.org> - 3.2.0-1
 - update to 3.2.0
 
