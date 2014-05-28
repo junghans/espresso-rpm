@@ -21,7 +21,7 @@
 
 Name:           espresso
 Version:        3.2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Group:          System Environment/Libraries
 
@@ -199,6 +199,9 @@ popd
 
 
 %changelog
+* Wed May 28 2014 Thomas Spura <tomspur@fedoraproject.org> - 3.2.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Changes/f21tcl86
+
 * Sun May 25 2014 Thomas Spura <tomspur@fedoraproject.org> - 3.2.0-2
 - run autoreconf in %%build to support aarch64
 
