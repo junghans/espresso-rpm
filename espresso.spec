@@ -39,6 +39,8 @@ BuildRequires:  numpy
 BuildRequires:  python-devel
 BuildRequires:  tcl-devel
 
+Requires:       numpy
+
 Requires:       %{name}-common = %{version}-%{release}
 
 %description
