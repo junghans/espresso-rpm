@@ -33,9 +33,11 @@ BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  libtool
 
+BuildRequires:  Cython
+BuildRequires:  fftw-devel
+BuildRequires:  numpy
 BuildRequires:  python-devel
 BuildRequires:  tcl-devel
-BuildRequires:  fftw-devel
 
 Requires:       %{name}-common = %{version}-%{release}
 
