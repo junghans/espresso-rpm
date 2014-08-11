@@ -33,6 +33,7 @@ BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  libtool
 
+BuildRequires:  python-devel
 BuildRequires:  tcl-devel
 BuildRequires:  fftw-devel
 
