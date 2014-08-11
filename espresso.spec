@@ -31,6 +31,7 @@ Source0:        http://download.savannah.gnu.org/releases/espressomd/espresso-%{
 # run autoreconf for aarch64 support
 BuildRequires:  autoconf
 BuildRequires:  automake
+BuildRequires:  libtool
 
 BuildRequires:  tcl-devel
 BuildRequires:  fftw-devel
