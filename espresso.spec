@@ -20,8 +20,8 @@
 %global OPENMPI 0
 
 Name:           espresso
-Version:        3.2.0
-Release:        4%{?dist}
+Version:        3.3.0
+Release:        1%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Group:          System Environment/Libraries
 
@@ -109,7 +109,7 @@ pushd no_mpi
 export CC=gcc
 export CXX=g++
 %dconfigure --enable-shared
-make %{?_smp_mflags}
+make V=1 %{?_smp_mflags}
 popd
 
 # Build parallel versions: set compiler variables to MPI wrappers
@@ -120,7 +120,7 @@ export CXX=mpicxx
 %{_openmpi_load}
 pushd openmpi_build
 %dconfigure_mpi --enable-shared --program-suffix=$MPI_SUFFIX
-make %{?_smp_mflags}
+make V=1 %{?_smp_mflags}
 popd
 %{_openmpi_unload}
 
@@ -128,7 +128,7 @@ popd
 %{_mpich_load}
 pushd mpich_build
 %dconfigure_mpi --enable-shared --program-suffix=$MPI_SUFFIX
-make %{?_smp_mflags}
+make V=1 %{?_smp_mflags}
 popd
 %{_mpich_unload}
 
@@ -199,6 +199,9 @@ popd
 
 
 %changelog
+* Mon Aug 11 2014 Thomas Spura <tomspur@fedoraproject.org> - 3.3.0-1
+- update to 3.3.0
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.2.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
