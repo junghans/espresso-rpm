@@ -23,7 +23,6 @@ Name:           espresso
 Version:        3.3.0
 Release:        3%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
-Group:          System Environment/Libraries
 
 License:        GPLv3+
 URL:            http://espressomd.org
@@ -72,7 +71,6 @@ BuildRequires:  openmpi-devel
 Requires:       openmpi%{?_isa}
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
-Group:          System Environment/Libraries
 %description openmpi
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
 in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
@@ -89,7 +87,6 @@ BuildRequires:  mpich-devel
 Requires:       mpich%{?_isa}
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
-Group:          System Environment/Libraries
 Provides:       %{name}-mpich2 = %{version}-%{release}
 Obsoletes:      %{name}-mpich2 < 3.1.1-3
 %description mpich
@@ -211,6 +208,7 @@ popd
 * Thu Mar 12 2015 Thomas Spura <tomspur@fedoraproject.org> - 3.3.0-3
 - Rebuild for changed mpich libraries
 - Added patch for building with cython-0.22
+- Remove group tag
 
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.3.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
