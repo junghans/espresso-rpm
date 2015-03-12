@@ -51,7 +51,7 @@ in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
 ESPResSo contains a number of advanced algorithms, e.g.
     * DPD thermostat (for hydrodynamics)
     * P3M, MMM2D, MMM1D, ELC for electrostatic interactions
-    * Lattice-Boltzmann for hydrodynamics 
+    * Lattice-Boltzmann for hydrodynamics
 
 %package common
 Summary:        Common files for %{name} packages
@@ -63,7 +63,7 @@ in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
 ESPResSo contains a number of advanced algorithms, e.g.
     * DPD thermostat (for hydrodynamics)
     * P3M, MMM2D, MMM1D, ELC for electrostatic interactions
-    * Lattice-Boltzmann for hydrodynamics 
+    * Lattice-Boltzmann for hydrodynamics
 This package contains the license file and data files shard between the
 subpackages of %{name}.
 
@@ -72,14 +72,14 @@ BuildRequires:  openmpi-devel
 Requires:       openmpi%{?_isa}
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
-Group:          System Environment/Libraries 
+Group:          System Environment/Libraries
 %description openmpi
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
 in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
 ESPResSo contains a number of advanced algorithms, e.g.
     * DPD thermostat (for hydrodynamics)
     * P3M, MMM2D, MMM1D, ELC for electrostatic interactions
-    * Lattice-Boltzmann for hydrodynamics 
+    * Lattice-Boltzmann for hydrodynamics
 
 This package contains %{name} compiled against Open MPI.
 
@@ -89,7 +89,7 @@ BuildRequires:  mpich-devel
 Requires:       mpich%{?_isa}
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
-Group:          System Environment/Libraries 
+Group:          System Environment/Libraries
 Provides:       %{name}-mpich2 = %{version}-%{release}
 Obsoletes:      %{name}-mpich2 < 3.1.1-3
 %description mpich
@@ -98,7 +98,7 @@ in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
 ESPResSo contains a number of advanced algorithms, e.g.
     * DPD thermostat (for hydrodynamics)
     * P3M, MMM2D, MMM1D, ELC for electrostatic interactions
-    * Lattice-Boltzmann for hydrodynamics 
+    * Lattice-Boltzmann for hydrodynamics
 
 This package contains %{name} compiled against MPICH2.
 
