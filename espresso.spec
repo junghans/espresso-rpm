@@ -28,6 +28,8 @@ Group:          System Environment/Libraries
 License:        GPLv3+
 URL:            http://espressomd.org
 Source0:        http://download.savannah.gnu.org/releases/espressomd/espresso-%{version}.tar.gz
+# upstream commit from https://github.com/espressomd/espresso/pull/214
+Patch0:         espresso-cython-022.patch
 # run autoreconf for aarch64 support
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -103,6 +105,7 @@ This package contains %{name} compiled against MPICH2.
 
 %prep
 %setup -q
+%patch0 -p1
 
 #sed -i 's/tclsh8\.4/tclsh/' tools/trace_memory.tcl
 
@@ -207,6 +210,7 @@ popd
 %changelog
 * Thu Mar 12 2015 Thomas Spura <tomspur@fedoraproject.org> - 3.3.0-3
 - Rebuild for changed mpich libraries
+- Added patch for building with cython-0.22
 
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.3.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
