@@ -21,7 +21,7 @@
 
 Name:           espresso
 Version:        3.3.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -205,6 +205,9 @@ popd
 
 
 %changelog
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 3.3.0-4
+- Rebuilt for GCC 5 C++11 ABI change
+
 * Thu Mar 12 2015 Thomas Spura <tomspur@fedoraproject.org> - 3.3.0-3
 - Rebuild for changed mpich libraries
 - Added patch for building with cython-0.22
