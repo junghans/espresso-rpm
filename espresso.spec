@@ -21,7 +21,7 @@
 
 Name:           espresso
 Version:        3.3.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -68,7 +68,6 @@ subpackages of %{name}.
 
 %package openmpi
 BuildRequires:  openmpi-devel
-Requires:       openmpi%{?_isa}
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
 %description openmpi
@@ -84,7 +83,6 @@ This package contains %{name} compiled against Open MPI.
 
 %package mpich
 BuildRequires:  mpich-devel
-Requires:       mpich%{?_isa}
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Provides:       %{name}-mpich2 = %{version}-%{release}
@@ -205,6 +203,9 @@ popd
 
 
 %changelog
+* Sun Jul 26 2015 Sandro Mani <manisandro@gmail.com> - 3.3.0-6
+- Rebuild for RPM MPI Requires Provides Change
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.3.0-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
