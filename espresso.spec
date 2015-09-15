@@ -21,7 +21,7 @@
 
 Name:           espresso
 Version:        3.3.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -203,6 +203,9 @@ popd
 
 
 %changelog
+* Tue Sep 15 2015 Orion Poplawski <orion@cora.nwra.com> - 3.3.0-8
+- Rebuild for openmpi 1.10.0
+
 * Sat Aug 15 2015 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 3.3.0-7
 - Rebuild for MPI provides
 
