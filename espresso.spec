@@ -21,7 +21,7 @@
 
 Name:           espresso
 Version:        3.3.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -203,6 +203,9 @@ popd
 
 
 %changelog
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.3.0-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Fri Oct 21 2016 Orion Poplawski <orion@cora.nwra.com> - 3.3.0-10
 - Rebuild for openmpi 2.0
 
