@@ -1,13 +1,12 @@
+%global git 1
+%global commit 7a9ac7414721b40d7d4eaf286b5ae6c18e28f325
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
+
 %if 0%{?fedora} > 12 || 0%{?rhel} > 6
 %global with_python3 1
 %else
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 %endif
-
-# Define a macro for calling ../configure instead of ./configure
-%global dconfigure %(printf %%s '%configure' | sed 's!\./configure!../configure!g')
-# transform proper bindir
-%global dconfigure_mpi %(printf %%s '%dconfigure' | sed 's!/usr/bin!$MPI_BIN!g')
 
 ### TESTSUITE ###
 # The testsuite currently fails only on the buildsystem, but works localy.
@@ -20,28 +19,33 @@
 %global OPENMPI 0
 
 Name:           espresso
-Version:        3.3.0
-Release:        11%{?dist}
+Version:        4.0
+Release:        0.1.20170220git%{shortcommit}%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
 URL:            http://espressomd.org
+%if %{git}
+Source0:	https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
+%else
 Source0:        http://download.savannah.gnu.org/releases/espressomd/espresso-%{version}.tar.gz
-# upstream commit from https://github.com/espressomd/espresso/pull/214
-Patch0:         espresso-cython-022.patch
-# run autoreconf for aarch64 support
-BuildRequires:  autoconf
-BuildRequires:  automake
-BuildRequires:  libtool
+%endif
+# PATCH-FIX-UPSTREAM - 1042.patch -  allow user to override PYTHON_INSTDIR
+Patch0:         https://patch-diff.githubusercontent.com/raw/espressomd/espresso/pull/1042.patch
 
+
+BuildRequires:  cmake
 BuildRequires:  Cython
 BuildRequires:  fftw-devel
 BuildRequires:  numpy
 BuildRequires:  python-devel
-BuildRequires:  tcl-devel
+BuildRequires:  boost-devel
+BuildRequires:  mpich-devel
+BuildRequires:  boost-mpich-devel
+BuildRequires:  openmpi-devel
+BuildRequires:  boost-openmpi-devel
 
 Requires:       numpy
-
 Requires:       %{name}-common = %{version}-%{release}
 
 %description
@@ -63,14 +67,28 @@ ESPResSo contains a number of advanced algorithms, e.g.
     * DPD thermostat (for hydrodynamics)
     * P3M, MMM2D, MMM1D, ELC for electrostatic interactions
     * Lattice-Boltzmann for hydrodynamics
-This package contains the license file and data files shard between the
+This package contains the license file and data files shared between the
 subpackages of %{name}.
 
-%package openmpi
-BuildRequires:  openmpi-devel
+%package devel
+Summary:        Development package for  %{name} packages
+Requires:       python2-%{name}-openmpi = %{version}-%{release}
+Requires:       python2-%{name}-mpich = %{version}-%{release}
+%description devel
+ESPResSo can perform Molecular Dynamics simulations of bead-spring models
+in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
+ESPResSo contains a number of advanced algorithms, e.g.
+    * DPD thermostat (for hydrodynamics)
+    * P3M, MMM2D, MMM1D, ELC for electrostatic interactions
+    * Lattice-Boltzmann for hydrodynamics
+This package contains the development libraries of %{name}.
+
+%package -n python2-%{name}-openmpi
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
-%description openmpi
+Provides:       %{name}-openmpi = %{version}-%{release}
+Obsoletes:      %{name}-openmpi < 3.3.0-12
+%description -n python2-%{name}-openmpi
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
 in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
 ESPResSo contains a number of advanced algorithms, e.g.
@@ -81,13 +99,14 @@ ESPResSo contains a number of advanced algorithms, e.g.
 This package contains %{name} compiled against Open MPI.
 
 
-%package mpich
-BuildRequires:  mpich-devel
+%package -n python2-%{name}-mpich
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Provides:       %{name}-mpich2 = %{version}-%{release}
 Obsoletes:      %{name}-mpich2 < 3.1.1-3
-%description mpich
+Provides:       %{name}-mpich = %{version}-%{release}
+Obsoletes:      %{name}-mpich < 3.3.0-12
+%description -n python2-%{name}-mpich
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
 in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
 ESPResSo contains a number of advanced algorithms, e.g.
@@ -99,76 +118,70 @@ This package contains %{name} compiled against MPICH2.
 
 
 %prep
+%if %{git}
+%setup -q -n espresso-%{commit}
+%else
 %setup -q
+%endif
 %patch0 -p1
-
-#sed -i 's/tclsh8\.4/tclsh/' tools/trace_memory.tcl
-
-mkdir openmpi_build mpich_build no_mpi
-
+find . -name "*.[ch]pp" -exec chmod -x {} \;
+chmod -x AUTHORS COPYING README NEWS ChangeLog 
+mkdir openmpi_build mpich_build
 
 %build
-autoreconf -fi
-pushd no_mpi
-export CC=gcc
-export CXX=g++
-%dconfigure --enable-shared
-make V=1 %{?_smp_mflags}
-popd
-
-# Build parallel versions: set compiler variables to MPI wrappers
-export CC=mpicc
-export CXX=mpicxx
+%global defopts \\\
+ -DWITH_PYTHON=ON \\\
+ -DWITH_TESTS=ON \\\
+ -DWITH_SCAFACOS=ON \\\
+ -DCMAKE_SKIP_RPATH:BOOL=ON \\\
+ -DCMAKE_SKIP_BUILD_RPATH:BOOL=ON \\\
+ -DINSTALL_PYPRESSO=OFF
 
 # Build OpenMPI version
+#see #756141 to understand why MPI_C_LIBRARIES needs to be set
 %{_openmpi_load}
 pushd openmpi_build
-%dconfigure_mpi --enable-shared --program-suffix=$MPI_SUFFIX
-make V=1 %{?_smp_mflags}
+%{cmake} \
+  %{defopts} \
+  -DLIBDIR=${MPI_LIB} \
+  -DPYTHON_INSTDIR=${MPI_PYTHON2_SITEARCH} \
+  -DMPI_C_LIBRARIES=${MPI_LIB}/libmpi.so \
+  ..
+%make_build
 popd
 %{_openmpi_unload}
 
 # Build mpich version
 %{_mpich_load}
 pushd mpich_build
-%dconfigure_mpi --enable-shared --program-suffix=$MPI_SUFFIX
-make V=1 %{?_smp_mflags}
+%{cmake} \
+  %{defopts} \
+  -DLIBDIR=${MPI_LIB} \
+  -DPYTHON_INSTDIR=${MPI_PYTHON2_SITEARCH} \
+  -DMPI_C_LIBRARIES=${MPI_LIB}/libmpi.so \
+  ..
+%make_build
 popd
 %{_mpich_unload}
-
 
 %install
 # first install mpi files and move around because MPI_SUFFIX above doesn't
 # work yet (will be fixed in a new version)
 %{_openmpi_load}
 pushd openmpi_build
-make install DESTDIR=%{buildroot}
+%make_install
 popd
 %{_openmpi_unload}
 
 %{_mpich_load}
 pushd mpich_build
-make install DESTDIR=%{buildroot}
+%make_install
 popd
 %{_mpich_unload}
-
-
-pushd no_mpi
-make install DESTDIR=%{buildroot}
-popd
-
-#rm %{buildroot}%{_libdir}/libespressobf.a
-
-chmod +x %{buildroot}/usr/share/espresso/tools/trace_memory.py
-chmod +x %{buildroot}/usr/share/espresso/tools/trace_memory.tcl
-chmod +x %{buildroot}/usr/share/espresso/tools/set_features
-
+find %{buildroot}%{_prefix} -name "*.so" -exec chmod +x {} \;
+find %{buildroot}%{_prefix} -name "gen_pxiconfig" -exec chmod +x {} \;
 
 %check
-pushd no_mpi
-make check || cat testsuite/runtest.log || :
-popd
-
 # test openmpi?
 %if 0%{?OPENMPI}
 %{_openmpi_load}
@@ -187,22 +200,27 @@ popd
 %{_mpich_unload}
 %endif
 
-
 %files common
-%doc AUTHORS COPYING README NEWS ChangeLog doc/ug/ug.pdf
-%{_datadir}/espresso/
+%doc AUTHORS README NEWS ChangeLog
+%license COPYING
 
-%files
-%{_bindir}/Espresso
+%files devel
+%{_libdir}/*/lib/lib*.so
 
-%files openmpi
-%{_libdir}/openmpi/bin/Espresso_openmpi
+%files -n python2-%{name}-openmpi
+%{_libdir}/openmpi/lib/lib*.so.*
+%{python_sitearch}/openmpi/%{name}md
 
-%files mpich
-%{_libdir}/mpich/bin/Espresso_mpich
-
+%files -n python2-%{name}-mpich
+%{_libdir}/mpich/lib/lib*.so.*
+%{python_sitearch}/mpich/%{name}md
 
 %changelog
+* Thu Feb 16 2017 Christoph Junghans <junghans@votca.org> - 4.0-0.1.20170220git7a9ac74
+- Bump to version 4.0 git version
+- Drop cypthon patch, incl. upstream
+- Add 1042.patch from upstream
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.3.0-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
