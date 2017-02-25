@@ -2,6 +2,9 @@
 %global commit 7a9ac7414721b40d7d4eaf286b5ae6c18e28f325
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
+#ppc64le has no boost-mpi package
+ExcludeArch: ppc64le
+
 %if 0%{?fedora} > 12 || 0%{?rhel} > 6
 %global with_python3 1
 %else
@@ -20,7 +23,7 @@
 
 Name:           espresso
 Version:        4.0
-Release:        0.1.20170220git%{shortcommit}%{?dist}
+Release:        0.2.20170220git%{shortcommit}%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -216,6 +219,9 @@ popd
 %{python_sitearch}/mpich/%{name}md
 
 %changelog
+* Sat Feb 25 2017 Christoph Junghans <junghans@votca.org> - 4.0-0.2.20170220git7a9ac74
+- ExcludeArch: ppc64le due to missing boost-mpi
+
 * Thu Feb 16 2017 Christoph Junghans <junghans@votca.org> - 4.0-0.1.20170220git7a9ac74
 - Bump to version 4.0 git version
 - Drop cypthon patch, incl. upstream
