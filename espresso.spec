@@ -1,5 +1,5 @@
 %global git 1
-%global commit 7a9ac7414721b40d7d4eaf286b5ae6c18e28f325
+%global commit 8a021f5e8b1d508f356f4419d360bd9dfb7fec2c
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 #ppc64le has no boost-mpi package
@@ -23,18 +23,18 @@ ExcludeArch: ppc64le
 
 Name:           espresso
 Version:        4.0
-Release:        0.2.20170220git%{shortcommit}%{?dist}
+Release:        0.3.20170228git%{shortcommit}%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
 URL:            http://espressomd.org
 %if %{git}
-Source0:	https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
+Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
 %else
 Source0:        http://download.savannah.gnu.org/releases/espressomd/espresso-%{version}.tar.gz
 %endif
-# PATCH-FIX-UPSTREAM - 1042.patch -  allow user to override PYTHON_INSTDIR
-Patch0:         https://patch-diff.githubusercontent.com/raw/espressomd/espresso/pull/1042.patch
+# PATCH-FIX-UPSTREAM - 1056.patch -  fix install
+Patch0:         https://patch-diff.githubusercontent.com/raw/espressomd/espresso/pull/1056.patch
 
 
 BuildRequires:  cmake
@@ -71,7 +71,7 @@ ESPResSo contains a number of advanced algorithms, e.g.
     * P3M, MMM2D, MMM1D, ELC for electrostatic interactions
     * Lattice-Boltzmann for hydrodynamics
 This package contains the license file and data files shared between the
-subpackages of %{name}.
+sub-packages of %{name}.
 
 %package devel
 Summary:        Development package for  %{name} packages
@@ -128,7 +128,7 @@ This package contains %{name} compiled against MPICH2.
 %endif
 %patch0 -p1
 find . -name "*.[ch]pp" -exec chmod -x {} \;
-chmod -x AUTHORS COPYING README NEWS ChangeLog 
+chmod -x AUTHORS COPYING README NEWS ChangeLog
 mkdir openmpi_build mpich_build
 
 %build
@@ -219,6 +219,10 @@ popd
 %{python_sitearch}/mpich/%{name}md
 
 %changelog
+* Sun Mar 05 2017 Christoph Junghans <junghans@votca.org> - 4.0-0.3.20170228git8a021f5
+- Dropped 1042.patch, merged upstream
+- Add 1056.patch to fix install
+
 * Sat Feb 25 2017 Christoph Junghans <junghans@votca.org> - 4.0-0.2.20170220git7a9ac74
 - ExcludeArch: ppc64le due to missing boost-mpi
 
