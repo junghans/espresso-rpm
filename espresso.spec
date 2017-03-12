@@ -2,9 +2,6 @@
 %global commit 8a021f5e8b1d508f356f4419d360bd9dfb7fec2c
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
-#ppc64le has no boost-mpi package
-ExcludeArch: ppc64le
-
 %if 0%{?fedora} > 12 || 0%{?rhel} > 6
 %global with_python3 1
 %else
@@ -23,7 +20,7 @@ ExcludeArch: ppc64le
 
 Name:           espresso
 Version:        4.0
-Release:        0.3.20170228git%{shortcommit}%{?dist}
+Release:        0.4.20170228git%{shortcommit}%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -219,6 +216,9 @@ popd
 %{python_sitearch}/mpich/%{name}md
 
 %changelog
+* Sun Mar 12 2017 Peter Robinson <pbrobinson@fedoraproject.org> 4.0-0.4.20170228git8a021f5
+- Drop ExcludeArch as boost-mpi is now built on ppc64le
+
 * Sun Mar 05 2017 Christoph Junghans <junghans@votca.org> - 4.0-0.3.20170228git8a021f5
 - Dropped 1042.patch, merged upstream
 - Add 1056.patch to fix install
