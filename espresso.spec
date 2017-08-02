@@ -20,7 +20,7 @@
 
 Name:           espresso
 Version:        4.0
-Release:        0.7.20170228git%{shortcommit}%{?dist}
+Release:        0.8.20170228git%{shortcommit}%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -216,6 +216,9 @@ popd
 %{python_sitearch}/mpich/%{name}md
 
 %changelog
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 4.0-0.8.20170228git8a021f5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
 * Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 4.0-0.7.20170228git8a021f5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
