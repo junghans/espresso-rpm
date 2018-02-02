@@ -1,5 +1,5 @@
 %global git 1
-%global commit 8a021f5e8b1d508f356f4419d360bd9dfb7fec2c
+%global commit f74064d62090da45a28225881008b05798703d1c
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 %if 0%{?fedora} > 12 || 0%{?rhel} > 6
@@ -20,7 +20,7 @@
 
 Name:           espresso
 Version:        4.0
-Release:        0.8.20170228git%{shortcommit}%{?dist}
+Release:        0.9.20180203git%{shortcommit}%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -30,8 +30,6 @@ Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%
 %else
 Source0:        http://download.savannah.gnu.org/releases/espressomd/espresso-%{version}.tar.gz
 %endif
-# PATCH-FIX-UPSTREAM - 1056.patch -  fix install
-Patch0:         https://patch-diff.githubusercontent.com/raw/espressomd/espresso/pull/1056.patch
 
 
 BuildRequires:  cmake
@@ -123,7 +121,6 @@ This package contains %{name} compiled against MPICH2.
 %else
 %setup -q
 %endif
-%patch0 -p1
 find . -name "*.[ch]pp" -exec chmod -x {} \;
 chmod -x AUTHORS COPYING README NEWS ChangeLog
 mkdir openmpi_build mpich_build
@@ -216,6 +213,9 @@ popd
 %{python_sitearch}/mpich/%{name}md
 
 %changelog
+* Sat Feb 03 2018 Christoph Junghans <junghans@votca.org> - 4.0-0.1.20170220git7a9ac74
+- Bump to version 4.0 git version f74064d
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 4.0-0.8.20170228git8a021f5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
