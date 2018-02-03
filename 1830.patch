@@ -1,0 +1,22 @@
+From a2930e0281cee8cbe073b1eb9ce14af11e6a2a55 Mon Sep 17 00:00:00 2001
+From: Christoph Junghans <junghans@votca.org>
+Date: Sun, 4 Feb 2018 15:03:38 -0700
+Subject: [PATCH] cmake: fix install and soversion of EspressoConfig
+
+---
+ src/core/CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index bf4add2561..37902a46bb 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -26,6 +26,8 @@ add_custom_command(OUTPUT config-version.cpp
+ # Custom target for everything that needs to be triggered when the myconfig changes
+ add_library(EspressoConfig SHARED config-features.cpp)
+ add_dependencies(EspressoConfig myconfig check_myconfig)
++install(TARGETS EspressoConfig LIBRARY DESTINATION ${LIBDIR})
++set_target_properties(EspressoConfig PROPERTIES SOVERSION ${SOVERSION})
+ 
+ add_library(EspressoCore SHARED ${EspressoCore_SRC} config-version.cpp)
+ install(TARGETS EspressoCore LIBRARY DESTINATION ${LIBDIR})
