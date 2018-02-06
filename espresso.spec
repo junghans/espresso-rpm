@@ -20,7 +20,7 @@
 
 Name:           espresso
 Version:        4.0
-Release:        0.10.20180203git%{shortcommit}%{?dist}
+Release:        0.11.20180203git%{shortcommit}%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -35,17 +35,17 @@ Patch0:         https://patch-diff.githubusercontent.com/raw/espressomd/espresso
 
 
 BuildRequires:  cmake
-BuildRequires:  Cython
+BuildRequires:  python2-Cython
 BuildRequires:  fftw-devel
-BuildRequires:  numpy
-BuildRequires:  python-devel
+BuildRequires:  python2-numpy
+BuildRequires:  python2-devel
 BuildRequires:  boost-devel
 BuildRequires:  mpich-devel
 BuildRequires:  boost-mpich-devel
 BuildRequires:  openmpi-devel
 BuildRequires:  boost-openmpi-devel
 
-Requires:       numpy
+Requires:       python2-numpy
 Requires:       %{name}-common = %{version}-%{release}
 
 %description
@@ -216,6 +216,10 @@ popd
 %{python_sitearch}/mpich/%{name}md
 
 %changelog
+* Tue Feb 06 2018 Iryna Shcherbina <ishcherb@redhat.com> - 4.0-0.11.20180203gitf74064d
+- Update Python 2 dependency declarations to new packaging standards
+  (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
+
 * Sun Feb 04 2018 Christoph Junghans <junghans@votca.org> - 4.0-0.10.20170220git7a9ac74
 - added 1830.patch to fix install (missing libEspressoConfig)
 
