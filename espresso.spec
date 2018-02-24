@@ -34,6 +34,7 @@ Source0:        http://download.savannah.gnu.org/releases/espressomd/espresso-%{
 Patch0:         https://patch-diff.githubusercontent.com/raw/espressomd/espresso/pull/1830.patch
 
 
+BuildRequires:  gcc-c++
 BuildRequires:  cmake
 BuildRequires:  python2-Cython
 BuildRequires:  fftw-devel
