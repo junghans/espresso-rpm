@@ -132,6 +132,7 @@ mkdir openmpi_build mpich_build
 %build
 %global defopts \\\
  -DWITH_PYTHON=ON \\\
+ -DPYTHON_EXECUTABLE=%{__python2} \\\
  -DWITH_TESTS=ON \\\
  -DWITH_SCAFACOS=ON \\\
  -DCMAKE_SKIP_RPATH:BOOL=ON \\\
@@ -210,11 +211,11 @@ popd
 
 %files -n python2-%{name}-openmpi
 %{_libdir}/openmpi/lib/lib*.so.*
-%{python_sitearch}/openmpi/%{name}md
+%{python2_sitearch}/openmpi/%{name}md
 
 %files -n python2-%{name}-mpich
 %{_libdir}/mpich/lib/lib*.so.*
-%{python_sitearch}/mpich/%{name}md
+%{python2_sitearch}/mpich/%{name}md
 
 %changelog
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 4.0-0.12.20180203gitf74064d
