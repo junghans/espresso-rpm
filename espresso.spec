@@ -137,6 +137,9 @@ mkdir openmpi_build mpich_build
  -DCMAKE_SKIP_BUILD_RPATH:BOOL=ON \\\
  -DINSTALL_PYPRESSO=OFF
 
+#save some memory using -j1
+%define _smp_mflags -j1
+
 # Build OpenMPI version
 #see #756141 to understand why MPI_C_LIBRARIES needs to be set
 %{_openmpi_load}
@@ -217,7 +220,8 @@ popd
 
 %changelog
 * Fri Sep 07 2018 Christoph Junghans <junghans@votca.org> - 4.0.0-1
-- version bump to 4.0.0 (bug #1625379) 
+- version bump to 4.0.0 (bug #1625379)
+- move to python3
 
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 4.0-0.12.20180203gitf74064d
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
