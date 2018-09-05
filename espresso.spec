@@ -1,4 +1,4 @@
-%global git 1
+%global git 0
 %global commit f74064d62090da45a28225881008b05798703d1c
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
@@ -19,8 +19,8 @@
 %global OPENMPI 0
 
 Name:           espresso
-Version:        4.0
-Release:        0.12.20180203git%{shortcommit}%{?dist}
+Version:        4.0.0
+Release:        1%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -28,25 +28,26 @@ URL:            http://espressomd.org
 %if %{git}
 Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
 %else
-Source0:        http://download.savannah.gnu.org/releases/espressomd/espresso-%{version}.tar.gz
+Source0:       https://github.com/%{name}md/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
 %endif
-# PATCH-FIX-UPSTREAM - 1830.patch -  fix install
-Patch0:         https://patch-diff.githubusercontent.com/raw/espressomd/espresso/pull/1830.patch
 
 
 BuildRequires:  gcc-c++
 BuildRequires:  cmake
 BuildRequires:  /usr/bin/cython
 BuildRequires:  fftw-devel
-BuildRequires:  python2-numpy
-BuildRequires:  python2-devel
+BuildRequires:  python%{python3_pkgversion}-numpy
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  boost-devel
+BuildRequires:  hdf5-devel
+BuildRequires:  gsl-devel
 BuildRequires:  boost-devel
 BuildRequires:  mpich-devel
 BuildRequires:  boost-mpich-devel
 BuildRequires:  openmpi-devel
 BuildRequires:  boost-openmpi-devel
 
-Requires:       python2-numpy
+Requires:       python%{python3_pkgversion}-numpy
 Requires:       %{name}-common = %{version}-%{release}
 
 %description
@@ -73,8 +74,8 @@ sub-packages of %{name}.
 
 %package devel
 Summary:        Development package for  %{name} packages
-Requires:       python2-%{name}-openmpi = %{version}-%{release}
-Requires:       python2-%{name}-mpich = %{version}-%{release}
+Requires:       python%{python3_pkgversion}-%{name}-openmpi = %{version}-%{release}
+Requires:       python%{python3_pkgversion}-%{name}-mpich = %{version}-%{release}
 %description devel
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
 in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
@@ -84,12 +85,12 @@ ESPResSo contains a number of advanced algorithms, e.g.
     * Lattice-Boltzmann for hydrodynamics
 This package contains the development libraries of %{name}.
 
-%package -n python2-%{name}-openmpi
+%package -n python%{python3_pkgversion}-%{name}-openmpi
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Provides:       %{name}-openmpi = %{version}-%{release}
 Obsoletes:      %{name}-openmpi < 3.3.0-12
-%description -n python2-%{name}-openmpi
+%description -n python%{python3_pkgversion}-%{name}-openmpi
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
 in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
 ESPResSo contains a number of advanced algorithms, e.g.
@@ -100,14 +101,14 @@ ESPResSo contains a number of advanced algorithms, e.g.
 This package contains %{name} compiled against Open MPI.
 
 
-%package -n python2-%{name}-mpich
+%package -n python%{python3_pkgversion}-%{name}-mpich
 Requires:       %{name}-common = %{version}-%{release}
 Summary:        Extensible Simulation Package for Research on Soft matter
 Provides:       %{name}-mpich2 = %{version}-%{release}
 Obsoletes:      %{name}-mpich2 < 3.1.1-3
 Provides:       %{name}-mpich = %{version}-%{release}
 Obsoletes:      %{name}-mpich < 3.3.0-12
-%description -n python2-%{name}-mpich
+%description -n python%{python3_pkgversion}-%{name}-mpich
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
 in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
 ESPResSo contains a number of advanced algorithms, e.g.
@@ -124,17 +125,14 @@ This package contains %{name} compiled against MPICH2.
 %else
 %setup -q
 %endif
-%patch0 -p1
-find . -name "*.[ch]pp" -exec chmod -x {} \;
 chmod -x AUTHORS COPYING README NEWS ChangeLog
 mkdir openmpi_build mpich_build
 
 %build
 %global defopts \\\
  -DWITH_PYTHON=ON \\\
- -DPYTHON_EXECUTABLE=%{__python2} \\\
+ -DPYTHON_EXECUTABLE=%{__python3} \\\
  -DWITH_TESTS=ON \\\
- -DWITH_SCAFACOS=ON \\\
  -DCMAKE_SKIP_RPATH:BOOL=ON \\\
  -DCMAKE_SKIP_BUILD_RPATH:BOOL=ON \\\
  -DINSTALL_PYPRESSO=OFF
@@ -146,7 +144,7 @@ pushd openmpi_build
 %{cmake} \
   %{defopts} \
   -DLIBDIR=${MPI_LIB} \
-  -DPYTHON_INSTDIR=${MPI_PYTHON2_SITEARCH} \
+  -DPYTHON_INSTDIR=${MPI_PYTHON3_SITEARCH} \
   -DMPI_C_LIBRARIES=${MPI_LIB}/libmpi.so \
   ..
 %make_build
@@ -159,7 +157,7 @@ pushd mpich_build
 %{cmake} \
   %{defopts} \
   -DLIBDIR=${MPI_LIB} \
-  -DPYTHON_INSTDIR=${MPI_PYTHON2_SITEARCH} \
+  -DPYTHON_INSTDIR=${MPI_PYTHON3_SITEARCH} \
   -DMPI_C_LIBRARIES=${MPI_LIB}/libmpi.so \
   ..
 %make_build
@@ -209,15 +207,18 @@ popd
 %files devel
 %{_libdir}/*/lib/lib*.so
 
-%files -n python2-%{name}-openmpi
+%files -n python%{python3_pkgversion}-%{name}-openmpi
 %{_libdir}/openmpi/lib/lib*.so.*
-%{python2_sitearch}/openmpi/%{name}md
+%{python3_sitearch}/openmpi/%{name}md
 
-%files -n python2-%{name}-mpich
+%files -n python%{python3_pkgversion}-%{name}-mpich
 %{_libdir}/mpich/lib/lib*.so.*
-%{python2_sitearch}/mpich/%{name}md
+%{python3_sitearch}/mpich/%{name}md
 
 %changelog
+* Fri Sep 07 2018 Christoph Junghans <junghans@votca.org> - 4.0.0-1
+- version bump to 4.0.0 (bug #1625379) 
+
 * Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 4.0-0.12.20180203gitf74064d
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
