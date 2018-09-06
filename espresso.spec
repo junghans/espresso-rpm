@@ -33,8 +33,19 @@ Source0:       https://github.com/%{name}md/%{name}/releases/download/%{version}
 
 
 BuildRequires:  gcc-c++
-BuildRequires:  cmake
+%if 0%{?rhel}
+BuildRequires:  cmake3 >= 3.0
+BuildRequires:  python%{python3_pkgversion}-Cython
+BuildRequires:  python%{python3_pkgversion}-setuptools
+%global cython /usr/bin/cython%{python3_version}
+# no boost-mpi* for ppc64le on epel7
+ExcludeArch:   ppc64le
+%else
+BuildRequires:  cmake >= 3.0
+%global cmake3 %{cmake}
 BuildRequires:  /usr/bin/cython
+%global cython /usr/bin/cython
+%endif
 BuildRequires:  fftw-devel
 BuildRequires:  python%{python3_pkgversion}-numpy
 BuildRequires:  python%{python3_pkgversion}-devel
@@ -135,20 +146,19 @@ mkdir openmpi_build mpich_build
  -DWITH_TESTS=ON \\\
  -DCMAKE_SKIP_RPATH:BOOL=ON \\\
  -DCMAKE_SKIP_BUILD_RPATH:BOOL=ON \\\
- -DINSTALL_PYPRESSO=OFF
+ -DINSTALL_PYPRESSO=OFF \\\
+ -DCYTHON_EXECUTABLE=%{cython}
 
 #save some memory using -j1
 %define _smp_mflags -j1
 
 # Build OpenMPI version
-#see #756141 to understand why MPI_C_LIBRARIES needs to be set
 %{_openmpi_load}
 pushd openmpi_build
-%{cmake} \
+%{cmake3} \
   %{defopts} \
   -DLIBDIR=${MPI_LIB} \
-  -DPYTHON_INSTDIR=${MPI_PYTHON3_SITEARCH} \
-  -DMPI_C_LIBRARIES=${MPI_LIB}/libmpi.so \
+  -DPYTHON_INSTDIR=%{python3_sitearch}/openmpi \
   ..
 %make_build
 popd
@@ -157,11 +167,10 @@ popd
 # Build mpich version
 %{_mpich_load}
 pushd mpich_build
-%{cmake} \
+%{cmake3} \
   %{defopts} \
   -DLIBDIR=${MPI_LIB} \
-  -DPYTHON_INSTDIR=${MPI_PYTHON3_SITEARCH} \
-  -DMPI_C_LIBRARIES=${MPI_LIB}/libmpi.so \
+  -DPYTHON_INSTDIR=%{python3_sitearch}/mpich \
   ..
 %make_build
 popd
