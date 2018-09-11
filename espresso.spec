@@ -2,22 +2,6 @@
 %global commit f74064d62090da45a28225881008b05798703d1c
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
-%if 0%{?fedora} > 12 || 0%{?rhel} > 6
-%global with_python3 1
-%else
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
-%endif
-
-### TESTSUITE ###
-# The testsuite currently fails only on the buildsystem, but works localy.
-# So to easy enable/disable the testsuite, I introduce the following
-#   variables:
-#
-# * MPICH:     if '1' enable mpich
-# * OPENMPI:   if '1' enable openmpi
-%global MPICH 0
-%global OPENMPI 0
-
 Name:           espresso
 Version:        4.0.0
 Release:        1%{?dist}
@@ -144,8 +128,7 @@ mkdir openmpi_build mpich_build
  -DWITH_PYTHON=ON \\\
  -DPYTHON_EXECUTABLE=%{__python3} \\\
  -DWITH_TESTS=ON \\\
- -DCMAKE_SKIP_RPATH:BOOL=ON \\\
- -DCMAKE_SKIP_BUILD_RPATH:BOOL=ON \\\
+ -DCMAKE_SKIP_INSTALL_RPATH:BOOL=ON \\\
  -DINSTALL_PYPRESSO=OFF \\\
  -DCYTHON_EXECUTABLE=%{cython}
 
@@ -194,20 +177,19 @@ find %{buildroot}%{_prefix} -name "*.so" -exec chmod +x {} \;
 find %{buildroot}%{_prefix} -name "gen_pxiconfig" -exec chmod +x {} \;
 
 %check
-# test openmpi?
-%if 0%{?OPENMPI}
+%glabal tests 0
+
+%if 0%{?tests}
+%global testargs ARGS='-E collision_detection'
 %{_openmpi_load}
 pushd openmpi_build
-make check || cat testsuite/runtest.log || :
+make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
 popd
 %{_openmpi_unload}
-%endif
 
-# test mpich?
-%if 0%{?MPICH}
 %{_mpich_load}
 pushd mpich_build
-make check || cat testsuite/runtest.log || :
+make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
 popd
 %{_mpich_unload}
 %endif
