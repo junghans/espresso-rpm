@@ -3,7 +3,7 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           espresso
-Version:        4.0.0
+Version:        4.0.1
 Release:        1%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
@@ -120,8 +120,8 @@ This package contains %{name} compiled against MPICH2.
 %else
 %setup -q
 %endif
-chmod -x AUTHORS COPYING README NEWS ChangeLog
 mkdir openmpi_build mpich_build
+sed -i 's/1.67/1.66/' CMakeLists.txt
 
 %build
 %global defopts \\\
@@ -177,10 +177,7 @@ find %{buildroot}%{_prefix} -name "*.so" -exec chmod +x {} \;
 find %{buildroot}%{_prefix} -name "gen_pxiconfig" -exec chmod +x {} \;
 
 %check
-%glabal tests 0
-
-%if 0%{?tests}
-%global testargs ARGS='-E collision_detection'
+#global testargs ARGS='-E collision_detection'
 %{_openmpi_load}
 pushd openmpi_build
 make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
@@ -192,7 +189,6 @@ pushd mpich_build
 make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
 popd
 %{_mpich_unload}
-%endif
 
 %files common
 %doc AUTHORS README NEWS ChangeLog
@@ -210,6 +206,9 @@ popd
 %{python3_sitearch}/mpich/%{name}md
 
 %changelog
+* Fri Jan 25 2019 Christoph Junghans <junghans@votca.org> - 4.0.1-1
+- version bump to 4.0.1
+
 * Fri Sep 07 2018 Christoph Junghans <junghans@votca.org> - 4.0.0-1
 - version bump to 4.0.0 (bug #1625379)
 - move to python3
