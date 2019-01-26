@@ -177,7 +177,12 @@ find %{buildroot}%{_prefix} -name "*.so" -exec chmod +x {} \;
 find %{buildroot}%{_prefix} -name "gen_pxiconfig" -exec chmod +x {} \;
 
 %check
-#global testargs ARGS='-E collision_detection'
+# https://github.com/espressomd/espresso/issues/2468
+%if 0%{?fedora} <= 29
+%ifarch ppc64 ppc64le aarch64
+%global testargs ARGS='-E npt'
+%endif
+%endif
 %{_openmpi_load}
 pushd openmpi_build
 make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
