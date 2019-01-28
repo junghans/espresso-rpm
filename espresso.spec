@@ -179,8 +179,13 @@ find %{buildroot}%{_prefix} -name "gen_pxiconfig" -exec chmod +x {} \;
 %check
 # https://github.com/espressomd/espresso/issues/2468
 %if 0%{?fedora} <= 29
-%ifarch ppc64 ppc64le aarch64 i686
+%ifarch ppc64 ppc64le aarch64
 %global testargs ARGS='-E npt'
+%endif
+# old Boost.MPI versions contain a use-after-free bug that seems to only cause crashes on i686
+# remove after boost>=1.67 is available
+%ifarch i686
+%global testargs ARGS='-E .'
 %endif
 %endif
 %{_openmpi_load}
