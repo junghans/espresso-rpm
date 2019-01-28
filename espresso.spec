@@ -185,13 +185,13 @@ find %{buildroot}%{_prefix} -name "gen_pxiconfig" -exec chmod +x {} \;
 %endif
 %{_openmpi_load}
 pushd openmpi_build
-make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
+LD_LIBRARY_PATH=${MPI_LIB}:%{buildroot}${MPI_LIB} make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
 popd
 %{_openmpi_unload}
 
 %{_mpich_load}
 pushd mpich_build
-make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
+LD_LIBRARY_PATH=${MPI_LIB}:%{buildroot}${MPI_LIB} make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
 popd
 %{_mpich_unload}
 
