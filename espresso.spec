@@ -179,7 +179,7 @@ find %{buildroot}%{_prefix} -name "gen_pxiconfig" -exec chmod +x {} \;
 %check
 # https://github.com/espressomd/espresso/issues/2468
 %if 0%{?fedora} <= 29
-%ifarch ppc64 ppc64le aarch6 i6864
+%ifarch ppc64 ppc64le aarch64 i686
 %global testargs ARGS='-E npt'
 %endif
 %endif
