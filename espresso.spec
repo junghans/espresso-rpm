@@ -182,9 +182,9 @@ find %{buildroot}%{_prefix} -name "gen_pxiconfig" -exec chmod +x {} \;
 %ifarch ppc64 ppc64le aarch64
 %global testargs ARGS='-E npt'
 %endif
-# old Boost.MPI versions contain a use-after-free bug that seems to only cause crashes on i686
+# old Boost.MPI versions contain a use-after-free bug that seems to only cause crashes on 32-bit plattform
 # remove after boost>=1.67 is available
-%ifarch i686
+%ifarch i686 %arm
 %global testargs ARGS='-E .'
 %endif
 %endif
