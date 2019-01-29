@@ -177,17 +177,6 @@ find %{buildroot}%{_prefix} -name "*.so" -exec chmod +x {} \;
 find %{buildroot}%{_prefix} -name "gen_pxiconfig" -exec chmod +x {} \;
 
 %check
-# https://github.com/espressomd/espresso/issues/2468
-%if 0%{?fedora} <= 29
-%ifarch ppc64 ppc64le aarch64
-%global testargs ARGS='-E npt'
-%endif
-# old Boost.MPI versions contain a use-after-free bug that seems to only cause crashes on 32-bit plattform
-# remove after boost>=1.67 is available
-%ifarch i686 %arm
-%global testargs ARGS='-E .'
-%endif
-%endif
 %{_openmpi_load}
 pushd openmpi_build
 LD_LIBRARY_PATH=${MPI_LIB}:%{buildroot}${MPI_LIB} make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
