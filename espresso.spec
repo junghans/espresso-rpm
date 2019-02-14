@@ -121,7 +121,9 @@ This package contains %{name} compiled against MPICH2.
 %setup -q
 %endif
 mkdir openmpi_build mpich_build
+%if 0%{?fedora} <= 29
 sed -i 's/1.67/1.66/' CMakeLists.txt
+%endif
 
 %build
 %global defopts \\\
