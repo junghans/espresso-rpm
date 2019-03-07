@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -206,6 +206,9 @@ popd
 %{python3_sitearch}/mpich/%{name}md
 
 %changelog
+* Thu Mar 07 2019 Troy Dawson <tdawson@redhat.com> - 4.0.1-2
+- Rebuilt to change main python from 3.4 to 3.6
+
 * Fri Jan 25 2019 Christoph Junghans <junghans@votca.org> - 4.0.1-1
 - version bump to 4.0.1
 
