@@ -3,8 +3,8 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           espresso
-Version:        4.0.1
-Release:        3%{?dist}
+Version:        4.0.2
+Release:        1%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -118,7 +118,7 @@ This package contains %{name} compiled against MPICH2.
 %if %{git}
 %setup -q -n espresso-%{commit}
 %else
-%setup -q
+%setup -q -n %{name}
 %endif
 mkdir openmpi_build mpich_build
 %if 0%{?fedora} <= 29
@@ -218,6 +218,9 @@ popd
 %{python3_sitearch}/mpich/%{name}md
 
 %changelog
+* Wed Apr 24 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-1
+- Version bump to 4.0.2
+
 * Thu Feb 14 2019 Orion Poplawski <orion@nwra.com> - 4.0.1-3
 - Rebuild for openmpi 3.1.3
 
