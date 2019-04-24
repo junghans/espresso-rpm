@@ -218,7 +218,6 @@ popd
 %{python3_sitearch}/mpich/%{name}md
 
 %changelog
-<<<<<<< HEAD
 * Wed Apr 24 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-1
 - Version bump to 4.0.2
 
