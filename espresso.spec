@@ -226,9 +226,7 @@ popd
 
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
-
-* Thu Mar 07 2019 Troy Dawson <tdawson@redhat.com> - 4.0.1-2
-- Rebuilt to change main python from 3.4 to 3.6
+- Rebuilt to change main python from 3.4 to 3.6 (on epel7)
 
 * Fri Jan 25 2019 Christoph Junghans <junghans@votca.org> - 4.0.1-1
 - version bump to 4.0.1
