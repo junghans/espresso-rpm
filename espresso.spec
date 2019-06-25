@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -39,8 +39,10 @@ BuildRequires:  gsl-devel
 BuildRequires:  boost-devel
 BuildRequires:  mpich-devel
 BuildRequires:  boost-mpich-devel
+BuildRequires:  hdf5-mpich-devel
 BuildRequires:  openmpi-devel
 BuildRequires:  boost-openmpi-devel
+BuildRequires:  hdf5-openmpi-devel
 
 Requires:       python%{python3_pkgversion}-numpy
 Requires:       %{name}-common = %{version}-%{release}
@@ -82,6 +84,8 @@ This package contains the development libraries of %{name}.
 
 %package -n python%{python3_pkgversion}-%{name}-openmpi
 Requires:       %{name}-common = %{version}-%{release}
+Requires:       python%{python3_pkgversion}-h5py
+Requires:       python%{python3_pkgversion}-MDAnalysis
 Summary:        Extensible Simulation Package for Research on Soft matter
 Provides:       %{name}-openmpi = %{version}-%{release}
 Obsoletes:      %{name}-openmpi < 3.3.0-12
@@ -98,6 +102,8 @@ This package contains %{name} compiled against Open MPI.
 
 %package -n python%{python3_pkgversion}-%{name}-mpich
 Requires:       %{name}-common = %{version}-%{release}
+Requires:       python%{python3_pkgversion}-h5py
+Requires:       python%{python3_pkgversion}-MDAnalysis
 Summary:        Extensible Simulation Package for Research on Soft matter
 Provides:       %{name}-mpich2 = %{version}-%{release}
 Obsoletes:      %{name}-mpich2 < 3.1.1-3
@@ -218,6 +224,9 @@ popd
 %{python3_sitearch}/mpich/%{name}md
 
 %changelog
+* Tue Jun 25 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-2
+- enable hdf5 support
+
 * Wed Apr 24 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-1
 - Version bump to 4.0.2
 
