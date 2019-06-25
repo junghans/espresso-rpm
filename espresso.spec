@@ -32,6 +32,7 @@ BuildRequires:  /usr/bin/cython
 %endif
 BuildRequires:  fftw-devel
 BuildRequires:  python%{python3_pkgversion}-numpy
+BuildRequires:  python%{python3_pkgversion}-six
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  boost-devel
 BuildRequires:  hdf5-devel
