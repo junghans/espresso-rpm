@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.0.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -13,6 +13,8 @@ URL:            http://espressomd.org
 Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
 %else
 Source0:       https://github.com/%{name}md/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
+# Add missing so number to libH5mdCore
+Patch0:        https://github.com/espressomd/espresso/pull/2946.patch
 %endif
 
 
@@ -126,6 +128,7 @@ This package contains %{name} compiled against MPICH2.
 %setup -q -n espresso-%{commit}
 %else
 %setup -q -n %{name}
+%patch0 -p1
 %endif
 mkdir openmpi_build mpich_build
 %if 0%{?fedora} <= 29
@@ -225,6 +228,9 @@ popd
 %{python3_sitearch}/mpich/%{name}md
 
 %changelog
+* Wed Jun 26 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-3
+- add missing soversion to libH5mdCore
+
 * Tue Jun 25 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-2
 - enable hdf5 support
 
