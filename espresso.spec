@@ -14,7 +14,8 @@ Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%
 %else
 Source0:       https://github.com/%{name}md/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
 # Add missing so number to libH5mdCore
-Patch0:        https://github.com/espressomd/espresso/pull/2946.patch
+# https://github.com/espressomd/espresso/pull/2946
+Patch0:        2946.patch
 %endif
 
 
