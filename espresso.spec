@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.0.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -229,6 +229,9 @@ popd
 %{python3_sitearch}/mpich/%{name}md
 
 %changelog
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Wed Jun 26 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-3
 - add missing soversion to libH5mdCore
 
