@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.0.2
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -47,6 +47,7 @@ BuildRequires:  hdf5-mpich-devel
 BuildRequires:  openmpi-devel
 BuildRequires:  boost-openmpi-devel
 BuildRequires:  hdf5-openmpi-devel
+BuildRequires:  python%{python3_pkgversion}-h5py
 
 Requires:       python%{python3_pkgversion}-numpy
 Requires:       %{name}-common = %{version}-%{release}
@@ -229,6 +230,9 @@ popd
 %{python3_sitearch}/mpich/%{name}md
 
 %changelog
+* Tue Sep 03 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-7
+- fix deps, h5py is needed at cmake time
+
 * Tue Aug 20 2019 Susi Lehtola <jussilehtola@fedoraproject.org> - 4.0.2-6
 - Rebuilt for GSL 2.6.
 
