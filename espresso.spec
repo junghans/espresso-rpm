@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.0.2
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -90,7 +90,7 @@ This package contains the development libraries of %{name}.
 %package -n python%{python3_pkgversion}-%{name}-openmpi
 Requires:       %{name}-common = %{version}-%{release}
 Requires:       python%{python3_pkgversion}-h5py
-Requires:       python%{python3_pkgversion}-MDAnalysis
+Suggests:       python%{python3_pkgversion}-MDAnalysis
 Summary:        Extensible Simulation Package for Research on Soft matter
 Provides:       %{name}-openmpi = %{version}-%{release}
 Obsoletes:      %{name}-openmpi < 3.3.0-12
@@ -108,7 +108,7 @@ This package contains %{name} compiled against Open MPI.
 %package -n python%{python3_pkgversion}-%{name}-mpich
 Requires:       %{name}-common = %{version}-%{release}
 Requires:       python%{python3_pkgversion}-h5py
-Requires:       python%{python3_pkgversion}-MDAnalysis
+Suggests:       python%{python3_pkgversion}-MDAnalysis
 Summary:        Extensible Simulation Package for Research on Soft matter
 Provides:       %{name}-mpich2 = %{version}-%{release}
 Obsoletes:      %{name}-mpich2 < 3.1.1-3
@@ -230,6 +230,9 @@ popd
 %{python3_sitearch}/mpich/%{name}md
 
 %changelog
+* Wed Sep 11 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-8
+- MDAnalysis is optional
+
 * Tue Sep 03 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-7
 - fix deps, h5py is needed at cmake time
 
