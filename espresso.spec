@@ -3,8 +3,8 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           espresso
-Version:        4.0.2
-Release:        8%{?dist}
+Version:        4.1.0
+Release:        1%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -13,23 +13,23 @@ URL:            http://espressomd.org
 Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
 %else
 Source0:       https://github.com/%{name}md/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
-# Add missing so number to libH5mdCore
-# https://github.com/espressomd/espresso/pull/2946
-Patch0:        2946.patch
+# Fix install
+# https://github.com/espressomd/espresso/pull/3228
+Patch0:        3228.diff
+# https://github.com/espressomd/espresso/issues/3230#issuecomment-538495680
+Patch1:        mpiio.patch
 %endif
 
 
 BuildRequires:  gcc-c++
+BuildRequires:  cmake3 >= 3.4
 %if 0%{?rhel}
-BuildRequires:  cmake3 >= 3.0
 BuildRequires:  python%{python3_pkgversion}-Cython
 BuildRequires:  python%{python3_pkgversion}-setuptools
 %global cython /usr/bin/cython%{python3_version}
 # no boost-mpi* for ppc64le on epel7
 ExcludeArch:   ppc64le
 %else
-BuildRequires:  cmake >= 3.0
-%global cmake3 %{cmake}
 BuildRequires:  /usr/bin/cython
 %global cython /usr/bin/cython
 %endif
@@ -51,6 +51,7 @@ BuildRequires:  python%{python3_pkgversion}-h5py
 
 Requires:       python%{python3_pkgversion}-numpy
 Requires:       %{name}-common = %{version}-%{release}
+Obsoletes:      %{name}-devel < %{version}-%{release}
 
 %description
 ESPResSo can perform Molecular Dynamics simulations of bead-spring models
@@ -73,19 +74,6 @@ ESPResSo contains a number of advanced algorithms, e.g.
     * Lattice-Boltzmann for hydrodynamics
 This package contains the license file and data files shared between the
 sub-packages of %{name}.
-
-%package devel
-Summary:        Development package for  %{name} packages
-Requires:       python%{python3_pkgversion}-%{name}-openmpi = %{version}-%{release}
-Requires:       python%{python3_pkgversion}-%{name}-mpich = %{version}-%{release}
-%description devel
-ESPResSo can perform Molecular Dynamics simulations of bead-spring models
-in various ensembles ((N,V,E), (N,V,T), and (N,p,T)).
-ESPResSo contains a number of advanced algorithms, e.g.
-    * DPD thermostat (for hydrodynamics)
-    * P3M, MMM2D, MMM1D, ELC for electrostatic interactions
-    * Lattice-Boltzmann for hydrodynamics
-This package contains the development libraries of %{name}.
 
 %package -n python%{python3_pkgversion}-%{name}-openmpi
 Requires:       %{name}-common = %{version}-%{release}
@@ -131,10 +119,7 @@ This package contains %{name} compiled against MPICH2.
 %else
 %setup -q -n %{name}
 %patch0 -p1
-%endif
-mkdir openmpi_build mpich_build
-%if 0%{?fedora} <= 29
-sed -i 's/1.67/1.66/' CMakeLists.txt
+%patch1 -p1
 %endif
 
 %build
@@ -149,87 +134,46 @@ sed -i 's/1.67/1.66/' CMakeLists.txt
 #save some memory using -j1
 %define _smp_mflags -j1
 
-# Build OpenMPI version
-%{_openmpi_load}
-pushd openmpi_build
-%{cmake3} \
-  %{defopts} \
-  -DLIBDIR=${MPI_LIB} \
-  -DPYTHON_INSTDIR=%{python3_sitearch}/openmpi \
-  ..
-%make_build
-popd
-%{_openmpi_unload}
-
-# Build mpich version
-%{_mpich_load}
-pushd mpich_build
-%{cmake3} \
-  %{defopts} \
-  -DLIBDIR=${MPI_LIB} \
-  -DPYTHON_INSTDIR=%{python3_sitearch}/mpich \
-  ..
-%make_build
-popd
-%{_mpich_unload}
+for mpi in mpich openmpi ; do
+   module load mpi/${mpi}-%{_arch}
+   mkdir ${mpi}
+   pushd ${mpi}
+   %{cmake3} %{defopts} -DLIBDIR=${MPI_LIB} -DPYTHON_INSTDIR=${MPI_PYTHON3_SITEARCH} ..
+   %make_build
+   popd
+   module unload mpi/${mpi}-%{_arch}
+done
 
 %install
-# first install mpi files and move around because MPI_SUFFIX above doesn't
-# work yet (will be fixed in a new version)
-%{_openmpi_load}
-pushd openmpi_build
-%make_install
-popd
-%{_openmpi_unload}
-
-%{_mpich_load}
-pushd mpich_build
-%make_install
-popd
-%{_mpich_unload}
-find %{buildroot}%{_prefix} -name "*.so" -exec chmod +x {} \;
-find %{buildroot}%{_prefix} -name "gen_pxiconfig" -exec chmod +x {} \;
+for mpi in mpich openmpi ; do
+   module load mpi/${mpi}-%{_arch}
+   %make_install -C "${mpi}"
+   module unload mpi/${mpi}-%{_arch}
+done
 
 %check
-# https://github.com/espressomd/espresso/issues/2468
-%if 0%{?fedora} <= 29
-%ifarch ppc64 ppc64le aarch64
-%global testargs ARGS='-E npt'
-%endif
-# old Boost.MPI versions contain a use-after-free bug that seems to only cause crashes on 32-bit plattform
-# remove after boost>=1.67 is available
-%ifarch i686 %arm
-%global testargs ARGS='-E .'
-%endif
-%endif
-%{_openmpi_load}
-pushd openmpi_build
-LD_LIBRARY_PATH=${MPI_LIB}:%{buildroot}${MPI_LIB} make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
-popd
-%{_openmpi_unload}
-
-%{_mpich_load}
-pushd mpich_build
-LD_LIBRARY_PATH=${MPI_LIB}:%{buildroot}${MPI_LIB} make check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
-popd
-%{_mpich_unload}
+for mpi in mpich openmpi ; do
+   module load mpi/${mpi}-%{_arch}
+   LD_LIBRARY_PATH=${MPI_LIB}:%{buildroot}${MPI_PYTHON3_SITEARCH}/%{name}md make -C "${mpi}" check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
+   module unload mpi/${mpi}-%{_arch}
+done
 
 %files common
 %doc AUTHORS README NEWS ChangeLog
 %license COPYING
 
-%files devel
-%{_libdir}/*/lib/lib*.so
-
 %files -n python%{python3_pkgversion}-%{name}-openmpi
-%{_libdir}/openmpi/lib/lib*.so.*
-%{python3_sitearch}/openmpi/%{name}md
+%{python3_sitearch}/openmpi/%{name}md/
 
 %files -n python%{python3_pkgversion}-%{name}-mpich
-%{_libdir}/mpich/lib/lib*.so.*
-%{python3_sitearch}/mpich/%{name}md
+%{python3_sitearch}/mpich/%{name}md/
 
 %changelog
+* Tue Oct 01 2019 Christoph Junghans <junghans@votca.org> - 4.1.0-1
+- Version bump to v4.1.0 (bug #1757509)
+- updated 2946.patch to 3228.diff
+- major spec clean up
+
 * Wed Sep 11 2019 Christoph Junghans <junghans@votca.org> - 4.0.2-8
 - MDAnalysis is optional
 
