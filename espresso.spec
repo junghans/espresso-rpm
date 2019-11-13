@@ -3,7 +3,7 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           espresso
-Version:        4.1.0
+Version:        4.1.1
 Release:        1%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
@@ -13,26 +13,13 @@ URL:            http://espressomd.org
 Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
 %else
 Source0:       https://github.com/%{name}md/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
-# Fix install
-# https://github.com/espressomd/espresso/pull/3228
-Patch0:        3228.diff
-# https://github.com/espressomd/espresso/issues/3230#issuecomment-538495680
-Patch1:        mpiio.patch
 %endif
 
 
 BuildRequires:  gcc-c++
 BuildRequires:  cmake3 >= 3.4
-%if 0%{?rhel}
-BuildRequires:  python%{python3_pkgversion}-Cython
-BuildRequires:  python%{python3_pkgversion}-setuptools
-%global cython /usr/bin/cython%{python3_version}
-# no boost-mpi* for ppc64le on epel7
-ExcludeArch:   ppc64le
-%else
 BuildRequires:  /usr/bin/cython
 %global cython /usr/bin/cython
-%endif
 BuildRequires:  fftw-devel
 BuildRequires:  python%{python3_pkgversion}-numpy
 BuildRequires:  python%{python3_pkgversion}-six
@@ -118,8 +105,6 @@ This package contains %{name} compiled against MPICH2.
 %setup -q -n espresso-%{commit}
 %else
 %setup -q -n %{name}
-%patch0 -p1
-%patch1 -p1
 %endif
 
 %build
@@ -127,7 +112,6 @@ This package contains %{name} compiled against MPICH2.
  -DWITH_PYTHON=ON \\\
  -DPYTHON_EXECUTABLE=%{__python3} \\\
  -DWITH_TESTS=ON \\\
- -DCMAKE_SKIP_RPATH=ON \\\
  -DINSTALL_PYPRESSO=OFF \\\
  -DCYTHON_EXECUTABLE=%{cython}
 
@@ -169,6 +153,9 @@ done
 %{python3_sitearch}/mpich/%{name}md/
 
 %changelog
+* Wed Nov 13 2019 Christoph Junghans <junghans@votca.org> - 4.1.1-1
+- Version bump to v4.1.1
+
 * Tue Oct 01 2019 Christoph Junghans <junghans@votca.org> - 4.1.0-1
 - Version bump to v4.1.0 (bug #1757509)
 - updated 2946.patch to 3228.diff
