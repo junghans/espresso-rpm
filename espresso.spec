@@ -13,6 +13,8 @@ URL:            http://espressomd.org
 Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
 %else
 Source0:       https://github.com/%{name}md/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
+# Fix Wang-Landau test on s390x
+Patch0:        https://github.com/espressomd/espresso/pull/3312.patch
 %endif
 
 
@@ -105,6 +107,7 @@ This package contains %{name} compiled against MPICH2.
 %setup -q -n espresso-%{commit}
 %else
 %setup -q -n %{name}
+%patch0 -p1
 %endif
 
 %build
