@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -115,6 +115,7 @@ This package contains %{name} compiled against MPICH2.
  -DWITH_PYTHON=ON \\\
  -DPYTHON_EXECUTABLE=%{__python3} \\\
  -DWITH_TESTS=ON \\\
+ -DCMAKE_SKIP_RPATH=ON \\\
  -DINSTALL_PYPRESSO=OFF \\\
  -DCYTHON_EXECUTABLE=%{cython}
 
@@ -156,6 +157,9 @@ done
 %{python3_sitearch}/mpich/%{name}md/
 
 %changelog
+* Fri Nov 15 2019 Christoph Junghans <junghans@votca.org> - 4.1.1-2
+- Remove rpath
+
 * Wed Nov 13 2019 Christoph Junghans <junghans@votca.org> - 4.1.1-1
 - Version bump to v4.1.1
 
