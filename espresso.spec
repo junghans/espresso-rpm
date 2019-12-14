@@ -3,8 +3,8 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           espresso
-Version:        4.1.1
-Release:        2%{?dist}
+Version:        4.1.2
+Release:        1%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -13,8 +13,6 @@ URL:            http://espressomd.org
 Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
 %else
 Source0:       https://github.com/%{name}md/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
-# Fix Wang-Landau test on s390x
-Patch0:        https://github.com/espressomd/espresso/pull/3312.patch
 %endif
 
 
@@ -107,7 +105,6 @@ This package contains %{name} compiled against MPICH2.
 %setup -q -n espresso-%{commit}
 %else
 %setup -q -n %{name}
-%patch0 -p1
 %endif
 
 %build
@@ -126,8 +123,11 @@ for mpi in mpich openmpi ; do
    module load mpi/${mpi}-%{_arch}
    mkdir ${mpi}
    pushd ${mpi}
+   old_LDFLAGS="${LDFLAGddS}"
+   export LDFLAGS="${LDFLAGS} -Wl,-rpath,${MPI_PYTHON3_SITEARCH}/%{name}md"
    %{cmake3} %{defopts} -DLIBDIR=${MPI_LIB} -DPYTHON_INSTDIR=${MPI_PYTHON3_SITEARCH} ..
-   %make_build
+   LD_LIBRARY_PATH=$PWD/src/config %make_build
+   export LDFLAGS="${old_LDFLAGS}"
    popd
    module unload mpi/${mpi}-%{_arch}
 done
@@ -157,6 +157,10 @@ done
 %{python3_sitearch}/mpich/%{name}md/
 
 %changelog
+* Fri Dec 13 2019 Christoph Junghans <junghans@votca.org> - 4.1.2-1
+- Version bump to v4.1.2 (bug #1783470)
+- Drop 3312.patch got merge upstream
+
 * Fri Nov 15 2019 Christoph Junghans <junghans@votca.org> - 4.1.1-2
 - Remove rpath
 
