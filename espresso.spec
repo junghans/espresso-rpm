@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.1.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -157,6 +157,9 @@ done
 %{python3_sitearch}/mpich/%{name}md/
 
 %changelog
+* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 4.1.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Fri Dec 13 2019 Christoph Junghans <junghans@votca.org> - 4.1.2-1
 - Version bump to v4.1.2 (bug #1783470)
 - Drop 3312.patch got merge upstream
