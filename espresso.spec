@@ -123,7 +123,7 @@ for mpi in mpich openmpi ; do
    module load mpi/${mpi}-%{_arch}
    mkdir ${mpi}
    pushd ${mpi}
-   old_LDFLAGS="${LDFLAGddS}"
+   old_LDFLAGS="${LDFLAGS}"
    export LDFLAGS="${LDFLAGS} -Wl,-rpath,${MPI_PYTHON3_SITEARCH}/%{name}md"
    %{cmake3} %{defopts} -DLIBDIR=${MPI_LIB} -DPYTHON_INSTDIR=${MPI_PYTHON3_SITEARCH} ..
    LD_LIBRARY_PATH=$PWD/src/config %make_build
