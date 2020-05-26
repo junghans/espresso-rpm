@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.1.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 
 License:        GPLv3+
@@ -157,6 +157,9 @@ done
 %{python3_sitearch}/mpich/%{name}md/
 
 %changelog
+* Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 4.1.2-3
+- Rebuilt for Python 3.9
+
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 4.1.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
