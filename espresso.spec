@@ -4,8 +4,10 @@
 
 Name:           espresso
 Version:        4.1.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
+# segfault on s390x: https://github.com/espressomd/espresso/issues/3753
+ExcludeArch:    s390x
 
 License:        GPLv3+
 URL:            http://espressomd.org
@@ -13,6 +15,8 @@ URL:            http://espressomd.org
 Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%{commit}.tar.gz
 %else
 Source0:       https://github.com/%{name}md/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
+# https://github.com/espressomd/espresso/pull/3725.patch on boost-1.73
+Patch0:        https://github.com/espressomd/espresso/pull/3725.patch
 %endif
 
 
@@ -105,6 +109,7 @@ This package contains %{name} compiled against MPICH2.
 %setup -q -n espresso-%{commit}
 %else
 %setup -q -n %{name}
+%patch0 -p1
 %endif
 
 %build
@@ -157,6 +162,9 @@ done
 %{python3_sitearch}/mpich/%{name}md/
 
 %changelog
+* Thu Jun 11 2020 Christoph Junghans <junghans@votca.org> - 4.1.2-4
+- fix build with boost-1.73
+
 * Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 4.1.2-3
 - Rebuilt for Python 3.9
 
