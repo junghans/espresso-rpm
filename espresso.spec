@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.1.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 # segfault on s390x: https://github.com/espressomd/espresso/issues/3753
 ExcludeArch:    s390x
@@ -162,6 +162,9 @@ done
 %{python3_sitearch}/mpich/%{name}md/
 
 %changelog
+* Fri Jul 03 2020 Christoph Junghans <junghans@votca.org> - 4.1.2-5
+- Rebuild for hdf5 1.10.6
+
 * Thu Jun 11 2020 Christoph Junghans <junghans@votca.org> - 4.1.2-4
 - fix build with boost-1.73
 
