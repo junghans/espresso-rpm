@@ -4,7 +4,7 @@
 
 Name:           espresso
 Version:        4.1.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Extensible Simulation Package for Research on Soft matter
 # segfault on s390x: https://github.com/espressomd/espresso/issues/3753
 ExcludeArch:    s390x
@@ -159,6 +159,9 @@ done
 %{python3_sitearch}/mpich/%{name}md/
 
 %changelog
+* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 4.1.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Wed Jul 08 2020 Christoph Junghans <junghans@votca.org> - 4.1.3-1
 - version bump to v4.1.3 (bug #1855054)
 
