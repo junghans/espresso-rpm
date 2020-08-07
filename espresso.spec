@@ -17,7 +17,6 @@ Source0:        https://github.com/%{name}md/%{name}/archive/%{commit}/%{name}-%
 Source0:       https://github.com/%{name}md/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
 %endif
 
-
 BuildRequires:  gcc-c++
 BuildRequires:  cmake3 >= 3.4
 BuildRequires:  /usr/bin/cython
@@ -117,34 +116,38 @@ This package contains %{name} compiled against MPICH2.
  -DCMAKE_SKIP_RPATH=ON \\\
  -DINSTALL_PYPRESSO=OFF \\\
  -DCYTHON_EXECUTABLE=%{cython}
+%global _vpath_builddir ${mpi:-serial}
+
+# https://github.com/espressomd/espresso/issues/3396
+%global _lto_cflags %{nil}
 
 #save some memory using -j1
-%define _smp_mflags -j1
+%global _smp_mflags -j1
 
 for mpi in mpich openmpi ; do
    module load mpi/${mpi}-%{_arch}
-   mkdir ${mpi}
-   pushd ${mpi}
    old_LDFLAGS="${LDFLAGS}"
    export LDFLAGS="${LDFLAGS} -Wl,-rpath,${MPI_PYTHON3_SITEARCH}/%{name}md"
-   %{cmake3} %{defopts} -DLIBDIR=${MPI_LIB} -DPYTHON_INSTDIR=${MPI_PYTHON3_SITEARCH} ..
-   LD_LIBRARY_PATH=$PWD/src/config %make_build
+   %{cmake3} %{defopts} -DLIBDIR=${MPI_LIB} -DPYTHON_INSTDIR=${MPI_PYTHON3_SITEARCH}
+   export LD_LIBRARY_PATH=$PWD/${mpi:-serial}/src/config
+   %cmake3_build
    export LDFLAGS="${old_LDFLAGS}"
-   popd
    module unload mpi/${mpi}-%{_arch}
 done
 
 %install
 for mpi in mpich openmpi ; do
    module load mpi/${mpi}-%{_arch}
-   %make_install -C "${mpi}"
+   %cmake3_install
    module unload mpi/${mpi}-%{_arch}
 done
 
 %check
+export CTEST_OUTPUT_ON_FAILURE=1
 for mpi in mpich openmpi ; do
    module load mpi/${mpi}-%{_arch}
-   LD_LIBRARY_PATH=${MPI_LIB}:%{buildroot}${MPI_PYTHON3_SITEARCH}/%{name}md make -C "${mpi}" check CTEST_OUTPUT_ON_FAILURE=1 %{?testargs:%{testargs}}
+   export LD_LIBRARY_PATH=${MPI_LIB}:%{buildroot}${MPI_PYTHON3_SITEARCH}/%{name}md
+   %cmake3_build --target check
    module unload mpi/${mpi}-%{_arch}
 done
 
